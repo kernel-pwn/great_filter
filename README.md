@@ -120,6 +120,43 @@ To unblock an IP after testing, remove the corresponding rule from Windows Defen
 netsh advfirewall firewall delete rule name="Block_DDoS_<ip>"
 ```
 
+## Unblocking IPs
+
+Blocked IPs stay blocked until their firewall rule is removed. `unblock_ips.py` automates that cleanup so you don't have to dig through Windows Defender Firewall or retype `netsh` commands by hand.
+
+The script reads a list of IPs from the `IPS_TO_UNBLOCK` constant at the top of the file, and for each one deletes the matching `Block_DDoS_<ip>` rule via `netsh advfirewall`.
+
+**Before running it**, open `unblock_ips.py` and edit the list to include the IPs you want to unblock:
+
+```python
+IPS_TO_UNBLOCK = ["127.0.0.1"]
+```
+
+Then, in a terminal **running as Administrator**, run:
+
+```bash
+python unblock_ips.py
+```
+
+Expected output:
+
+```
+Removing firewall rule for: 127.0.0.1
+Cleanup complete.
+```
+
+If it isn't run with Administrator privileges, it exits immediately with:
+
+```
+Error: This script requires Administrator privileges.
+```
+
+**`unblock_ips.py` configuration**
+
+| Constant           | Default         | Description                                   |
+|--------------------|-----------------|------------------------------------------------|
+| `IPS_TO_UNBLOCK`   | `["127.0.0.1"]` | List of IP addresses to remove firewall blocks for. |
+
 ## Project Structure
 
 ```
